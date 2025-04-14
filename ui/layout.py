@@ -5,6 +5,7 @@ from features.compare import build_compare_panel
 from features.clean import build_clean_panel
 from config.settings import DEFAULT_FOLDER
 import os  # 添加 os 模块
+from features.db_compare import build_db_compare_panel  # 导入数据库比对功能
 
 class AppLayout:
     def __init__(self):
@@ -32,7 +33,7 @@ class AppLayout:
         main_pane = tk.PanedWindow(self.root, orient=tk.HORIZONTAL, bg="#2e2e2e")
         main_pane.pack(fill=tk.BOTH, expand=True)
 
-        menu_items = ["文件夹对比", "违规文件清理"]
+        menu_items = ["文件夹对比", "违规文件清理", "数据库比对"]  # 添加数据库比对菜单项
         menu_frame, self.menu_listbox = create_sidebar(main_pane, menu_items, self._on_menu_select)
         main_pane.add(menu_frame)
 
@@ -51,6 +52,9 @@ class AppLayout:
         elif selection == "违规文件清理":
             clean_path_var = tk.StringVar(value=DEFAULT_FOLDER)
             build_clean_panel(self.main_frame, clean_path_var, self.root)
+        elif selection == "数据库比对":  # 添加数据库比对功能的调用
+            target_path_var = tk.StringVar(value=DEFAULT_FOLDER)
+            build_db_compare_panel(self.main_frame, target_path_var, self.root)
 
     def run(self):
         self.root.mainloop()
