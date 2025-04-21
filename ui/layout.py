@@ -6,6 +6,7 @@ from features.clean import build_clean_panel
 from config.settings import DEFAULT_FOLDER
 import os  # 添加 os 模块
 from features.db_compare import build_db_compare_panel  # 导入数据库比对功能
+from features.download711url import build_download711url_panel  # 导入下载 711 URL 功能
 
 class AppLayout:
     def __init__(self):
@@ -29,11 +30,15 @@ class AppLayout:
         style.map("TButton", background=[("active", "#555"), ("pressed", "#666")])
         style.configure("TCombobox", fieldbackground="#3a3a3a", background="#3a3a3a", foreground="#ffffff", padding=4, font=self.base_font)
 
+        # 默认输入框文字颜色为黑色
+        style.configure("TEntry", foreground="black")
+        style.configure("TText", foreground="black")
+
     def _build_ui(self):
         main_pane = tk.PanedWindow(self.root, orient=tk.HORIZONTAL, bg="#2e2e2e")
         main_pane.pack(fill=tk.BOTH, expand=True)
 
-        menu_items = ["文件夹对比", "违规文件清理", "数据库比对"]  # 添加数据库比对菜单项
+        menu_items = ["文件夹对比", "违规文件清理", "数据库比对", "下载 711 URL"]  # 添加下载 711 URL 菜单项
         menu_frame, self.menu_listbox = create_sidebar(main_pane, menu_items, self._on_menu_select)
         main_pane.add(menu_frame)
 
@@ -52,9 +57,11 @@ class AppLayout:
         elif selection == "违规文件清理":
             clean_path_var = tk.StringVar(value=DEFAULT_FOLDER)
             build_clean_panel(self.main_frame, clean_path_var, self.root)
-        elif selection == "数据库比对":  # 添加数据库比对功能的调用
+        elif selection == "数据库比对":
             target_path_var = tk.StringVar(value=DEFAULT_FOLDER)
             build_db_compare_panel(self.main_frame, target_path_var, self.root)
+        elif selection == "下载 711 URL":  # 添加下载 711 URL 功能的调用
+            build_download711url_panel(self.main_frame, self.root)
 
     def run(self):
         self.root.mainloop()

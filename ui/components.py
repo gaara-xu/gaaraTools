@@ -26,10 +26,14 @@ def create_result_area(parent):
     inner_frame = ttk.Frame(canvas)
     canvas.create_window((0, 0), window=inner_frame, anchor="nw", width=960)
 
-    def _on_mousewheel(event):
-        canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+    def _on_mousewheel(event, canvas):
+        """
+        处理鼠标滚轮事件，滚动 Canvas。
+        """
+        if canvas.winfo_exists():  # 检查 Canvas 是否仍然存在
+            canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-    canvas.bind_all("<MouseWheel>", _on_mousewheel)
+    canvas.bind_all("<MouseWheel>", lambda event: _on_mousewheel(event, canvas))
     inner_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
     return canvas, inner_frame

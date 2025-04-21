@@ -18,3 +18,6 @@ SPECIFIC_FILE_NAMES = [
     "社区发布器", "1024社区发布器 10.1版.zip", "最新地址.zip.zip", "最新地址.zip",
     "资源共享","低画质预览", "66.mp4", "18禁成人游戏六款附带礼包码"
 ]
+
+
+DEFAULT_REQUEST_INTERVAL = 1  # 默认请求间隔为 1 秒
