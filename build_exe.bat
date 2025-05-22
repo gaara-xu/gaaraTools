@@ -5,6 +5,7 @@ set MAIN_SCRIPT=main.py
 set EXE_NAME=GaaraTools
 set DIST_DIR=dist
 set BUILD_DIR=build
+set BIN_DIR=bin
 
 :: 检查是否安装 PyInstaller
 where pyinstaller >nul 2>nul
@@ -17,6 +18,7 @@ if %errorlevel% neq 0 (
 
 :: 删除旧的构建目录
 if exist %BUILD_DIR% rmdir /s /q %BUILD_DIR%
+if exist %DIST_DIR% rmdir /s /q %DIST_DIR%
 
 :: 检查是否已存在目标 exe 文件
 if exist %DIST_DIR%\%EXE_NAME%.exe (
@@ -34,9 +36,12 @@ if exist %DIST_DIR%\%EXE_NAME%.exe (
     )
 )
 
-:: 打包为单个 exe 文件
+:: 打包为单个 exe 文件，并包含 bin 文件夹中的二进制文件
 echo 正在打包...
-pyinstaller --onefile --noconsole --name %EXE_NAME% --distpath %DIST_DIR% --workpath %BUILD_DIR% %MAIN_SCRIPT%
+pyinstaller --onefile --noconsole --name %EXE_NAME% --distpath %DIST_DIR% --workpath %BUILD_DIR% ^
+--add-binary "%BIN_DIR%\ffmpeg.exe;bin" ^
+--add-binary "%BIN_DIR%\ffprobe.exe;bin" ^
+%MAIN_SCRIPT%
 
 :: 检查打包是否成功
 if exist %DIST_DIR%\%EXE_NAME%.exe (
