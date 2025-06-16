@@ -140,3 +140,14 @@ def build_compare_panel(parent, left_path_var, right_path_var, root):
     ttk.Button(button_frame, text="开始比对", command=compare_folders).pack(side=tk.LEFT, padx=5)
     delete_all_button = ttk.Button(button_frame, text="删除全部", command=delete_all_files, state=tk.DISABLED)
     delete_all_button.pack(side=tk.LEFT, padx=5)
+
+from . import register_feature
+from config.settings import DEFAULT_FOLDER
+
+def _init_feature(parent, root):
+    left_var = tk.StringVar(value=DEFAULT_FOLDER)
+    right_var = tk.StringVar(value=DEFAULT_FOLDER)
+    build_compare_panel(parent, left_var, right_var, root)
+
+register_feature("文件夹对比")(_init_feature)
+

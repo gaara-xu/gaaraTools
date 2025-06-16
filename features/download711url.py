@@ -296,3 +296,11 @@ def build_download711url_panel(parent: tk.Widget, root: tk.Tk) -> None:
 
     # token 输入列自动伸缩
     form.columnconfigure(1, weight=1)
+
+from . import register_feature
+
+def _init_feature(parent, root):
+    build_download711url_panel(parent, root)
+
+register_feature("下载 711 URL")(_init_feature)
+

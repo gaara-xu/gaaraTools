@@ -1,15 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
 from ui.components import create_sidebar
-from features.compare import build_compare_panel
-from features.clean import build_clean_panel
-from config.settings import DEFAULT_FOLDER
-import os  # 添加 os 模块
-from features.db_compare import build_db_compare_panel  # 导入数据库比对功能
-from features.download711url import build_download711url_panel  # 导入下载 711 URL 功能
-from features.batch_rename import build_batch_rename_panel  # 导入文件名批量修改工具
-from features.tv_rename import build_tv_rename_panel  # 导入电视剧名称专用工具
-from features.trim_video import build_trim_video_panel  # 导入去片头片尾工具
+from features import load_features
 
 class AppLayout:
     def __init__(self):
@@ -17,6 +9,9 @@ class AppLayout:
         self.root.title("文件对比工具")
         self.root.geometry("1000x650")
         self.root.configure(bg="#2e2e2e")
+
+        # Load feature registry
+        self.features = load_features()
 
         self._apply_dark_theme()
         self._build_ui()
@@ -41,39 +36,22 @@ class AppLayout:
         main_pane = tk.PanedWindow(self.root, orient=tk.HORIZONTAL, bg="#2e2e2e")
         main_pane.pack(fill=tk.BOTH, expand=True)
 
-        menu_items = ["文件夹对比", "违规文件清理", "数据库比对", "下载 711 URL", "文件名批量修改", "电视剧名称专用", "去片头片尾"]  # 添加去片头片尾菜单项
+        menu_items = list(self.features.keys())
         menu_frame, self.menu_listbox = create_sidebar(main_pane, menu_items, self._on_menu_select)
         main_pane.add(menu_frame)
 
         self.main_frame = ttk.Frame(main_pane, padding=20)
         main_pane.add(self.main_frame, stretch="always")
 
-        self._on_menu_select(menu_items[0])  # 默认加载第一个功能
+        if menu_items:
+            self._on_menu_select(menu_items[0])  # 默认加载第一个功能
 
     def _on_menu_select(self, selection):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
-        if selection == "文件夹对比":
-            left_path_var = tk.StringVar(value=DEFAULT_FOLDER)
-            right_path_var = tk.StringVar(value=DEFAULT_FOLDER)
-            build_compare_panel(self.main_frame, left_path_var, right_path_var, self.root)
-        elif selection == "违规文件清理":
-            clean_path_var = tk.StringVar(value=DEFAULT_FOLDER)
-            build_clean_panel(self.main_frame, clean_path_var, self.root)
-        elif selection == "数据库比对":
-            target_path_var = tk.StringVar(value=DEFAULT_FOLDER)
-            build_db_compare_panel(self.main_frame, target_path_var, self.root)
-        elif selection == "下载 711 URL":
-            build_download711url_panel(self.main_frame, self.root)
-        elif selection == "文件名批量修改":  # 添加文件名批量修改功能的调用
-            default_folder_var = tk.StringVar(value=DEFAULT_FOLDER)
-            build_batch_rename_panel(self.main_frame, default_folder_var, self.root)
-        elif selection == "电视剧名称专用":  # 添加电视剧名称专用功能的调用
-            default_folder_var = tk.StringVar(value=DEFAULT_FOLDER)
-            build_tv_rename_panel(self.main_frame, default_folder_var, self.root)
-        elif selection == "去片头片尾":  # 添加去片头片尾功能的调用
-            default_folder_var = tk.StringVar(value=DEFAULT_FOLDER)
-            build_trim_video_panel(self.main_frame, default_folder_var, self.root)
+        builder = self.features.get(selection)
+        if builder:
+            builder(self.main_frame, self.root)
 
     def run(self):
         self.root.mainloop()

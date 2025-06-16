@@ -110,3 +110,13 @@ def build_clean_panel(parent, clean_path_var, root):
     button_frame.pack(pady=10)
     ttk.Button(button_frame, text="扫描", command=scan_folder).pack(side=tk.LEFT, padx=10)
     ttk.Button(button_frame, text="清理", command=clean_folder).pack(side=tk.LEFT, padx=10)
+
+from . import register_feature
+from config.settings import DEFAULT_FOLDER
+
+def _init_feature(parent, root):
+    clean_path_var = tk.StringVar(value=DEFAULT_FOLDER)
+    build_clean_panel(parent, clean_path_var, root)
+
+register_feature("违规文件清理")(_init_feature)
+

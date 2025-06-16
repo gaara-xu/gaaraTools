@@ -172,3 +172,13 @@ def build_trim_video_panel(parent, default_folder_var, root):
     button_frame = ttk.Frame(parent)
     button_frame.pack(pady=10)
     ttk.Button(button_frame, text="执行", command=execute_trim).pack(side=tk.LEFT, padx=10)
+
+from . import register_feature
+from config.settings import DEFAULT_FOLDER
+
+def _init_feature(parent, root):
+    default_folder_var = tk.StringVar(value=DEFAULT_FOLDER)
+    build_trim_video_panel(parent, default_folder_var, root)
+
+register_feature("去片头片尾")(_init_feature)
+

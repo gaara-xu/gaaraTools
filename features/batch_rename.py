@@ -127,3 +127,13 @@ def build_batch_rename_panel(parent, default_folder_var, root):
     button_frame.pack(pady=10)
     ttk.Button(button_frame, text="预览", command=preview_rename).pack(side=tk.LEFT, padx=10)
     ttk.Button(button_frame, text="执行", command=execute_rename).pack(side=tk.LEFT, padx=10)
+
+from . import register_feature
+from config.settings import DEFAULT_FOLDER
+
+def _init_feature(parent, root):
+    default_folder_var = tk.StringVar(value=DEFAULT_FOLDER)
+    build_batch_rename_panel(parent, default_folder_var, root)
+
+register_feature("文件名批量修改")(_init_feature)
+

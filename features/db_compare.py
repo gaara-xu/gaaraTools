@@ -92,3 +92,13 @@ def build_db_compare_panel(parent, target_path_var, root):
 
     ttk.Button(button_frame, text="开始比对", command=compare_with_db).pack(side=tk.LEFT, padx=5)
     ttk.Button(button_frame, text="删除全部", command=delete_all_redundant_files).pack(side=tk.LEFT, padx=5)
+
+from . import register_feature
+from config.settings import DEFAULT_FOLDER
+
+def _init_feature(parent, root):
+    target_path_var = tk.StringVar(value=DEFAULT_FOLDER)
+    build_db_compare_panel(parent, target_path_var, root)
+
+register_feature("数据库比对")(_init_feature)
+
