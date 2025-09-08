@@ -6,10 +6,10 @@ from features.clean import build_clean_panel
 from config.settings import DEFAULT_FOLDER
 import os  # 添加 os 模块
 from features.db_compare import build_db_compare_panel  # 导入数据库比对功能
-from features.download711url import build_download711url_panel  # 导入下载 711 URL 功能
 from features.batch_rename import build_batch_rename_panel  # 导入文件名批量修改工具
 from features.tv_rename import build_tv_rename_panel  # 导入电视剧名称专用工具
 from features.trim_video import build_trim_video_panel  # 导入去片头片尾工具
+from features.add_filter_word import build_add_filter_word_panel  # 导入过滤词管理功能
 
 class AppLayout:
     def __init__(self):
@@ -41,7 +41,7 @@ class AppLayout:
         main_pane = tk.PanedWindow(self.root, orient=tk.HORIZONTAL, bg="#2e2e2e")
         main_pane.pack(fill=tk.BOTH, expand=True)
 
-        menu_items = ["文件夹对比", "违规文件清理", "数据库比对", "下载 711 URL", "文件名批量修改", "电视剧名称专用", "去片头片尾"]  # 添加去片头片尾菜单项
+        menu_items = ["文件夹对比", "违规文件清理", "数据库比对","文件名批量修改", "电视剧名称专用", "去片头片尾", "过滤词管理"]
         menu_frame, self.menu_listbox = create_sidebar(main_pane, menu_items, self._on_menu_select)
         main_pane.add(menu_frame)
 
@@ -63,17 +63,17 @@ class AppLayout:
         elif selection == "数据库比对":
             target_path_var = tk.StringVar(value=DEFAULT_FOLDER)
             build_db_compare_panel(self.main_frame, target_path_var, self.root)
-        elif selection == "下载 711 URL":
-            build_download711url_panel(self.main_frame, self.root)
-        elif selection == "文件名批量修改":  # 添加文件名批量修改功能的调用
+        elif selection == "文件名批量修改":
             default_folder_var = tk.StringVar(value=DEFAULT_FOLDER)
             build_batch_rename_panel(self.main_frame, default_folder_var, self.root)
-        elif selection == "电视剧名称专用":  # 添加电视剧名称专用功能的调用
+        elif selection == "电视剧名称专用":
             default_folder_var = tk.StringVar(value=DEFAULT_FOLDER)
             build_tv_rename_panel(self.main_frame, default_folder_var, self.root)
-        elif selection == "去片头片尾":  # 添加去片头片尾功能的调用
+        elif selection == "去片头片尾":
             default_folder_var = tk.StringVar(value=DEFAULT_FOLDER)
             build_trim_video_panel(self.main_frame, default_folder_var, self.root)
+        elif selection == "过滤词管理":
+            build_add_filter_word_panel(self.main_frame, self.root)
 
     def run(self):
         self.root.mainloop()

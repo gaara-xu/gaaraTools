@@ -3,9 +3,10 @@ import tkinter as tk
 from tkinter import ttk, filedialog
 import os
 import shutil
+import pymysql
 
 # 引入规则配置
-from config.settings import FILE_EXTENSIONS, FOLDER_NAMES, SPECIFIC_FILE_NAMES, DEFAULT_FOLDER
+from config.settings import DEFAULT_FOLDER
 
 # 初始化扫描结果与标签
 scan_results = []
@@ -39,6 +40,14 @@ def build_clean_panel(parent, clean_path_var, root):
     canvas, clean_inner_ref = create_result_area(parent)
     clean_inner = clean_inner_ref  # 绑定为全局 clean_inner
 
+    def get_filter_words(ktype):
+        conn = pymysql.connect(host="192.168.3.110", user="root", password="root", database="manhua", charset="utf8")
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT kvalue FROM manhuaconfig WHERE ktype=%s", (ktype,))
+            result = [row[0] for row in cursor.fetchall()]
+        conn.close()
+        return result
+
     def scan_folder():
         global scan_results, scan_labels, clean_inner
 
@@ -55,15 +64,19 @@ def build_clean_panel(parent, clean_path_var, root):
 
         found_items = []
 
+        file_extensions = get_filter_words(6)
+        folder_names = get_filter_words(5)
+        specific_file_names = get_filter_words(4)
+
         for root_dir, dirs, files in os.walk(folder, topdown=False):
             for name in files:
                 file_path = os.path.join(root_dir, name)
                 file_lower = name.lower()
-                if any(file_lower.endswith(ext) for ext in FILE_EXTENSIONS) or any(keyword in name for keyword in SPECIFIC_FILE_NAMES):
+                if any(file_lower.endswith(ext) for ext in file_extensions) or any(keyword in name for keyword in specific_file_names):
                     found_items.append(file_path)
             for name in dirs:
                 dir_path = os.path.join(root_dir, name)
-                if name in FOLDER_NAMES:
+                if name in folder_names:
                     found_items.append(dir_path)
 
         if found_items:
